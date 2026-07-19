@@ -40,7 +40,7 @@ next rather than explaining a fixed dataset.
 
 ---
 
-## Technical Skills Demonstrated (For Interviewers)
+## Technical Skills Demonstrated
 
 **Bayesian optimization / sequential experimental design** — Gaussian
 Process surrogate modeling, Expected Improvement acquisition, mixed
