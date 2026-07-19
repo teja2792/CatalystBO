@@ -5,6 +5,11 @@ A single BO run can get lucky/unlucky from its random initial points and
 GP noise. This repeats both random_search and bayesian_optimization across
 multiple seeds and reports mean +/- std final regret, plus a combined
 long-format CSV for averaged regret curves with error bands in Phase 4.
+
+Each row also carries the full candidate parameters (composition,
+particle_size_nm, metal_loading_wt_pct, facet, calcination_temp_C,
+defect_density) so this same log can be reused in Phase 5 to train a
+SHAP-explainable surrogate on everything the BO loop evaluated.
 """
 
 import csv
@@ -43,6 +48,7 @@ def random_search_run(budget, seed):
         activity = oracle(**candidate, rng=rng)["Activity_pct"]
         best_so_far = max(best_so_far, activity)
         rows.append({"method": "random_search", "seed": seed, "iteration": i,
+                      **candidate,
                       "activity": round(activity, 2), "best_so_far": round(best_so_far, 2),
                       "regret": round(TRUE_OPTIMUM_ACTIVITY - best_so_far, 2)})
     return rows
@@ -61,6 +67,7 @@ def bo_run(budget, seed, n_initial_points=10):
         opt.tell(x, -activity)
         best_so_far = max(best_so_far, activity)
         rows.append({"method": "bayesian_optimization", "seed": seed, "iteration": i,
+                      **candidate,
                       "activity": round(activity, 2), "best_so_far": round(best_so_far, 2),
                       "regret": round(TRUE_OPTIMUM_ACTIVITY - best_so_far, 2)})
     return rows
